@@ -372,7 +372,7 @@ export default function HomePage() {
             <span style={{ color: '#F5C842' }}>Not as an afterthought.</span>
           </h2>
           <p className="relative text-slate-400 text-base leading-relaxed max-w-2xl mx-auto mb-3">
-            Ticklr stores everything in your phone&apos;s secure local database — Apple SwiftData on iOS, Android Room on Android. We have no servers, no analytics, and no way to see your data, because none of it ever leaves your device.
+            Ticklr stores everything in your phone&apos;s secure local database — Apple SwiftData on iOS, Android Room on Android. We have no servers and no analytics — and neither we nor anyone else can access your data, because none of it ever leaves your device.
           </p>
           <p className="relative text-slate-500 text-sm leading-relaxed max-w-xl mx-auto mb-8">
             No account to create. No password to forget. No breach to worry about.

@@ -42,7 +42,7 @@ export default function PrivacyPage() {
         <Section title="The short version">
           <p>
             Ticklr stores everything on your device. We have no servers. We collect no data.
-            We cannot see your contacts, your messages, or your reminders — because none of that ever leaves your phone.
+            No one outside your device can see your contacts, your messages, or your reminders — because none of that ever leaves your phone.
           </p>
         </Section>
 
