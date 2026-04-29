@@ -8,20 +8,25 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        bebas: ['var(--font-bebas)', 'cursive'],
         sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],
+        mono: ['var(--font-mono)', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
       },
       colors: {
-        brand: {
-          blue: '#2563EB',
-          gold: '#F5C842',
-          dark: '#0b0f1a',
-          card: '#111827',
-          border: '#1e2a3a',
+        bg: '#fafaf7',
+        ink: {
+          DEFAULT: '#0a0a0a',
+          2: '#1a1a1a',
+          3: '#4a4a4a',
+          4: '#8a8a8a',
+        },
+        amber: {
+          DEFAULT: '#F5C842',
+          ink: '#1a1a1a',
         },
       },
-      backgroundImage: {
-        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+      borderColor: {
+        ink: '#0a0a0a',
+        soft: 'rgba(10,10,10,0.10)',
       },
     },
   },

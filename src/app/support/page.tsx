@@ -7,7 +7,9 @@ export const metadata: Metadata = {
   description: 'Get help with Ticklr — Your People Matter.',
 }
 
-const faqs = [
+const CONTACT_EMAIL = 'support@xaymaca.com'
+
+const FAQS = [
   {
     q: 'How do I import my LinkedIn contacts?',
     a: 'Go to linkedin.com → Settings & Privacy → Data Privacy → Get a copy of your data → select Connections → Request archive. LinkedIn will email you a download link within 10–30 minutes. Download the zip, open it in the Files app (it unzips automatically), then open Ticklr → Import → Import from LinkedIn CSV and select the Connections.csv file.',
@@ -22,11 +24,11 @@ const faqs = [
   },
   {
     q: 'My data disappeared after reinstalling. Can I get it back?',
-    a: "Ticklr stores everything locally on your device with no cloud backup. If you delete the app, your data is deleted with it. A future version will offer optional iCloud / Google backup. For now, treat Ticklr like a local note — reinstalling starts fresh.",
+    a: 'Ticklr stores everything locally on your device with no cloud backup. If you delete the app, your data is deleted with it. A future version will offer optional iCloud / Google backup. For now, treat Ticklr like a local note — reinstalling starts fresh.',
   },
   {
     q: 'What is a tickle reminder?',
-    a: "A tickle is a recurring reminder to reach out to someone. For example: \"Call dad every Sunday\" or \"Check in with my colleague every 2 months.\" Ticklr will notify you when it's time and mark it done when you act on it, then schedule the next one automatically.",
+    a: 'A tickle is a recurring reminder to reach out to someone. For example: "Call dad every Sunday" or "Check in with my colleague every 2 months." Ticklr will notify you when it\'s time and mark it done when you act on it, then schedule the next one automatically.',
   },
   {
     q: 'How do I delete a contact?',
@@ -36,72 +38,94 @@ const faqs = [
 
 export default function SupportPage() {
   return (
-    <div className="min-h-screen text-slate-200" style={{ backgroundColor: '#080c14' }}>
+    <div className="bg-bg text-ink">
+      {/* Spec strip */}
+      <div className="spec-strip border-b border-ink font-mono text-[10px] tracking-[0.02em] text-ink-3">
+        <span>TICKLR/SUPPORT · v1.0.0</span>
+        <span className="hidden sm:inline">REPLIES WITHIN 1 BUSINESS DAY</span>
+        <span className="sm:text-right">xaymaca/ticklr</span>
+      </div>
 
       {/* Nav */}
-      <nav
-        className="flex items-center justify-between px-6 py-4 max-w-3xl mx-auto"
-        style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}
-      >
-        <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-          <div className="w-7 h-7 rounded-lg overflow-hidden">
-            <Image src="/assets/app-icon.png" alt="Ticklr" width={28} height={28} className="w-full h-full object-cover" />
+      <nav className="site-nav border-b border-ink flex items-center justify-between gap-4">
+        <Link href="/" className="flex items-center gap-3.5 flex-shrink-0">
+          <div className="w-9 h-9 border border-ink overflow-hidden flex-shrink-0">
+            <Image
+              src="/assets/app-icon.png"
+              alt=""
+              width={36}
+              height={36}
+              className="w-full h-full object-cover"
+              style={{ filter: 'grayscale(0.3)' }}
+              priority
+            />
           </div>
-          <span className="font-bebas text-xl tracking-widest text-white">Ticklr</span>
+          <span className="font-sans text-[22px] font-extrabold tracking-[-0.02em] lowercase text-ink">
+            ticklr<span className="text-amber">.</span>
+          </span>
         </Link>
-        <Link href="/" className="text-sm text-slate-500 hover:text-slate-300 transition-colors flex items-center gap-1.5">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M19 12H5M12 19l-7-7 7-7" />
-          </svg>
-          Back
+        <Link
+          href="/"
+          className="font-mono text-xs text-ink border border-ink hover:opacity-70 transition-opacity"
+          style={{ padding: '10px 16px' }}
+        >
+          ← back
         </Link>
       </nav>
 
-      <main className="max-w-3xl mx-auto px-6 pb-24">
-        <div className="pt-12 pb-4">
-          <h1 className="font-bebas text-6xl tracking-wide text-white mb-4">Support</h1>
-          <p className="text-slate-400 text-sm">
-            Need help? Email us at{' '}
-            <a
-              href="mailto:support@xaymaca.com"
-              className="hover:underline transition-colors"
-              style={{ color: '#F5C842' }}
-            >
-              support@xaymaca.com
-            </a>{' '}
-            and we&apos;ll get back to you within 1 business day.
-          </p>
+      {/* Page header */}
+      <section className="border-b border-ink section-head flex flex-col gap-3">
+        <div className="font-mono text-[11px] uppercase text-ink-3" style={{ letterSpacing: '0.16em' }}>
+          // document / support
+        </div>
+        <h1
+          className="font-sans font-black lowercase text-ink m-0"
+          style={{ fontSize: 'clamp(48px, 9vw, 120px)', lineHeight: 0.85, letterSpacing: '-0.05em' }}
+        >
+          support<span className="text-amber">.</span>
+        </h1>
+        <p className="font-sans text-ink m-0 max-w-xl" style={{ fontSize: 16, lineHeight: 1.55, fontWeight: 500 }}>
+          Need help? Email{' '}
+          <a
+            href={`mailto:${CONTACT_EMAIL}`}
+            className="bg-amber text-amber-ink px-1 font-bold hover:opacity-80 transition-opacity"
+          >
+            {CONTACT_EMAIL}
+          </a>{' '}
+          <span className="text-ink-3">— we&apos;ll get back within one business day.</span>
+        </p>
+      </section>
+
+      {/* FAQ table */}
+      <section>
+        <div className="section-head flex justify-between items-baseline border-b border-ink">
+          <h2 className="font-sans font-black lowercase text-ink m-0" style={{ fontSize: 'clamp(32px, 5vw, 48px)', letterSpacing: '-0.04em' }}>
+            frequently asked
+          </h2>
+          <div className="font-mono text-[11px] text-ink-3 hidden sm:block">{FAQS.length} entries</div>
         </div>
 
-        <h2 className="font-bebas text-3xl tracking-wide text-white mt-12 mb-8">Frequently Asked Questions</h2>
-
-        <div className="space-y-4">
-          {faqs.map((faq, i) => (
-            <div
-              key={i}
-              className="rounded-2xl p-6"
-              style={{
-                backgroundColor: 'rgba(15,22,35,0.7)',
-                border: '1px solid rgba(255,255,255,0.06)',
-              }}
-            >
-              <h3 className="font-semibold text-white mb-2 text-sm">{faq.q}</h3>
-              <p className="text-slate-400 text-sm leading-relaxed">{faq.a}</p>
+        {FAQS.map((f, i) => (
+          <div
+            key={f.q}
+            className="faq-row"
+            style={{ borderBottom: i < FAQS.length - 1 ? '1px solid var(--rule-soft)' : 'none' }}
+          >
+            <div className="font-mono font-bold text-amber" style={{ fontSize: 13 }}>
+              q.{String(i + 1).padStart(2, '0')}
             </div>
-          ))}
-        </div>
-      </main>
+            <div className="font-sans font-bold text-ink" style={{ fontSize: 22, letterSpacing: '-0.015em' }}>{f.q}</div>
+            <div className="font-sans text-ink-3" style={{ fontSize: 14, lineHeight: 1.6 }}>{f.a}</div>
+          </div>
+        ))}
+      </section>
 
-      <footer
-        className="px-6 py-8 max-w-3xl mx-auto text-sm text-slate-600"
-        style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}
-      >
-        <Link href="/" className="hover:text-slate-300 transition-colors flex items-center gap-1.5">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M19 12H5M12 19l-7-7 7-7" />
-          </svg>
-          Back to Ticklr
-        </Link>
+      {/* Footer */}
+      <footer className="footer-grid font-mono text-ink-3 border-t border-ink" style={{ fontSize: 11 }}>
+        <span>© 2026 xaymaca</span>
+        <Link href="/" className="hover:text-ink transition-colors">./home</Link>
+        <Link href="/privacy" className="hover:text-ink transition-colors">./privacy-policy</Link>
+        <span className="text-right">v1.0.0</span>
       </footer>
     </div>
   )
