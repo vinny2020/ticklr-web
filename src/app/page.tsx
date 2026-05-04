@@ -1,518 +1,692 @@
+'use client'
+
 import Image from 'next/image'
 import Link from 'next/link'
+import { motion } from 'framer-motion'
 
-const APP_STORE_URL = 'https://apps.apple.com/us/app/ticklr/id6760884034'
-const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.xaymaca.sit'
+import IOSMock from '@/components/IOSMock'
+import AndroidMock from '@/components/AndroidMock'
+import { AppleIcon, PlayIcon, CheckIcon } from '@/components/Icons'
 
-function AppleIcon({ size = 14 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-      <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z" />
-    </svg>
-  )
+// ─── Tokens (D5: Observatory × Brutalist) ────────────────────────────────────
+
+const D5 = {
+  bg: '#080c14',
+  bgRaised: '#0f1623',
+  fg1: '#ffffff',
+  fg2: '#e2e8f0',
+  fg3: '#94a3b8',
+  fg4: '#475569',
+  fg5: '#334155',
+  cobalt: '#2563EB',
+  amber: '#F5C842',
+  border: 'rgba(255,255,255,0.06)',
+  borderStrong: 'rgba(255,255,255,0.10)',
 }
 
-function PlayIcon({ size = 14 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-      <path d="M3 22V2l18 10L3 22z" />
-    </svg>
-  )
+const fadeUp = {
+  hidden: { opacity: 0, y: 24 },
+  visible: (i = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.55, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] },
+  }),
 }
 
-const TICKLES = [
-  { name: 'Keisha Brown', date: '3 days overdue', freq: 'Every 2 weeks', due: true, upcomingBefore: false },
-  { name: 'Mei Chen', date: 'Today', freq: 'Weekly', due: true, upcomingBefore: false },
-  { name: 'Hannah Fischer', date: 'Tomorrow', freq: 'Every 2 weeks', due: false, upcomingBefore: true },
-  { name: 'Aisha Johnson', date: 'In 4 days', freq: 'Monthly', due: false, upcomingBefore: false },
-  { name: 'Daniel Kim', date: 'In 9 days', freq: 'Quarterly', due: false, upcomingBefore: false },
-]
-
-function AndroidMock({ w, h }: { w: number; h: number }) {
-  return (
-    <div
-      className="relative flex-shrink-0"
-      style={{
-        width: w,
-        height: h,
-        borderRadius: 36,
-        padding: 6,
-        background: '#1a1a1f',
-        boxShadow: '0 30px 80px rgba(0,0,0,0.45), 0 0 0 1px rgba(255,255,255,0.06)',
-      }}
-    >
-      <div
-        className="absolute"
-        style={{ top: 18, left: '50%', transform: 'translateX(-50%)', width: 9, height: 9, borderRadius: '50%', background: '#000', zIndex: 2 }}
-      />
-      <div className="flex flex-col h-full overflow-hidden" style={{ borderRadius: 30, background: '#0A1628' }}>
-        <div className="flex justify-between" style={{ padding: '12px 18px 6px', fontFamily: 'Roboto, system-ui, sans-serif', fontSize: 12, fontWeight: 500, color: '#E8EDF5' }}>
-          <span>9:30</span>
-          <span style={{ display: 'inline-block', width: 16, height: 8, border: '1px solid #E8EDF5', borderRadius: 1, position: 'relative' }}>
-            <span style={{ position: 'absolute', inset: 1, background: '#E8EDF5' }} />
-          </span>
-        </div>
-        <div style={{ padding: '14px 18px 8px', fontFamily: 'Roboto, system-ui, sans-serif', fontSize: 22, fontWeight: 700, color: '#E8EDF5' }}>Tickle</div>
-        <div style={{ padding: '6px 18px', background: '#1A2E4A', fontFamily: 'Roboto, sans-serif', fontSize: 10, fontWeight: 700, letterSpacing: 0.6, color: '#F5C842', textTransform: 'uppercase' }}>Due</div>
-        <div className="flex-1">
-          {TICKLES.map((t) => (
-            <div key={t.name}>
-              {t.upcomingBefore && (
-                <div style={{ padding: '6px 18px', background: '#1A2E4A', fontFamily: 'Roboto, sans-serif', fontSize: 10, fontWeight: 700, letterSpacing: 0.6, color: '#8FA3BF', textTransform: 'uppercase' }}>Upcoming</div>
-              )}
-              <div className="flex items-center" style={{ gap: 10, padding: '10px 18px' }}>
-                <div
-                  className="flex items-center justify-center flex-shrink-0"
-                  style={{
-                    width: 36, height: 36, borderRadius: 18,
-                    background: t.due ? '#F5C842' : '#1A2E4A',
-                    color: t.due ? '#0A1628' : '#8FA3BF',
-                    fontFamily: 'Roboto, sans-serif', fontSize: 13, fontWeight: 700,
-                  }}
-                >
-                  {t.name.split(' ').map(n => n[0]).join('')}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div style={{ fontFamily: 'Roboto, sans-serif', fontSize: 14, fontWeight: 600, color: '#E8EDF5' }}>{t.name}</div>
-                  <div style={{ fontFamily: 'Roboto, sans-serif', fontSize: 11, color: t.due ? '#F5C842' : '#8FA3BF' }}>{t.date}</div>
-                </div>
-                <div
-                  style={{
-                    padding: '2px 7px', borderRadius: 6,
-                    background: t.due ? '#F5C842' : '#1A2E4A',
-                    color: t.due ? '#0A1628' : '#8FA3BF',
-                    fontFamily: 'Roboto, sans-serif', fontSize: 9, fontWeight: 600,
-                  }}
-                >
-                  {t.freq}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-        <div
-          className="absolute flex items-center justify-center"
-          style={{ right: 18, bottom: 70, width: 44, height: 44, borderRadius: 14, background: '#F5C842', boxShadow: '0 4px 8px rgba(0,0,0,0.3)' }}
-        >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="#0A1628" aria-hidden>
-            <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
-          </svg>
-        </div>
-        <div className="flex" style={{ background: '#1A2E4A', padding: '10px 0 8px' }}>
-          {['Network', 'Tickle', 'Groups', 'Compose', 'Settings'].map((t, i) => (
-            <div
-              key={t}
-              className="flex-1 text-center"
-              style={{ fontFamily: 'Roboto, sans-serif', fontSize: 9, fontWeight: i === 1 ? 600 : 500, color: i === 1 ? '#E8EDF5' : '#8FA3BF' }}
-            >
-              <div style={{ width: 32, height: 16, margin: '0 auto 4px', borderRadius: 8, background: i === 1 ? '#1D4ED8' : 'transparent' }} />
-              {t}
-            </div>
-          ))}
-        </div>
-        <div className="flex justify-center items-center" style={{ height: 14, background: '#1A2E4A' }}>
-          <div style={{ width: 80, height: 3, borderRadius: 2, background: 'rgba(232,237,245,0.4)' }} />
-        </div>
-      </div>
-    </div>
-  )
-}
+// ─── Data ─────────────────────────────────────────────────────────────────────
 
 const FEATURES = [
-  { id: '01', name: 'Fully Private', desc: 'No accounts, no servers, no tracking. Local SQLite-backed store on each device.', avail: 'iOS · Android' },
-  { id: '02', name: 'Import Network', desc: 'iOS contacts, Android phonebook, or LinkedIn CSV. Manual deduplication preserved.', avail: 'iOS · Android' },
-  { id: '03', name: 'Tickle Reminders', desc: 'Recurring nudges on your schedule. Daily, weekly, monthly, quarterly, yearly, custom.', avail: 'iOS · Android' },
-  { id: '04', name: 'Native Messaging', desc: 'SMS / MMS compose with prefilled recipients & templates. No third-party messaging service.', avail: 'iOS · Android' },
-]
-
-const PRIVACY = [
-  ['01', 'no servers', 'There is no backend. Every byte of your data lives on your phone.'],
-  ['02', 'no accounts', 'Nothing to sign up for. Nothing to forget. Nothing to breach.'],
-  ['03', 'no analytics', 'We do not know you exist. We do not count installs, retention, or usage.'],
-  ['04', 'no cloud', 'Your contact list never leaves your device. Move phones via local export only.'],
+  {
+    id: '01',
+    name: 'Fully Private',
+    desc: 'No accounts, no servers, no tracking. Your data lives in the OS-native local store on each device — Apple SwiftData on iOS, Android Room on Android.',
+    avail: 'iOS · Android',
+    tech: '~/Library/.../Ticklr.sqlite',
+    color: D5.cobalt,
+  },
+  {
+    id: '02',
+    name: 'Tickle Reminders',
+    desc: 'Recurring nudges to reach out, on a schedule you set. Daily, weekly, monthly, quarterly, yearly, or custom — repeats you actually want.',
+    avail: 'iOS · Android',
+    tech: 'localNotifications · cron-like',
+    color: D5.amber,
+  },
+  {
+    id: '03',
+    name: 'Import Network',
+    desc: 'Bring contacts in from your iPhone or Android phonebook, or paste a LinkedIn CSV export. Manual deduplication preserved — you stay in control.',
+    avail: 'iOS · Android',
+    tech: 'CNContact · Contacts · CSV',
+    color: '#a78bfa',
+  },
+  {
+    id: '04',
+    name: 'Native Messaging',
+    desc: 'Compose SMS and MMS directly from your contact list, with prefilled recipients and reusable templates. No third-party messaging service.',
+    avail: 'iOS · Android',
+    tech: 'MessageUI · Telephony',
+    color: '#34d399',
+  },
 ] as const
 
-const FAQ = [
-  {
-    q: 'Is Ticklr really free?',
-    a: 'Yes. Free to download, no in-app purchases, no subscription. Built by Xaymaca as part of our toolkit. We make money elsewhere.',
-  },
-  {
-    q: 'Where does my data live?',
-    a: "On your device, in the OS-native local database — Apple SwiftData on iOS, Android Room on Android. Not on our servers, because we don't have any.",
-  },
-  {
-    q: 'Will you add a web version or sync?',
-    a: 'No web version, and no cross-device sync. Both would mean a server. The point of Ticklr is that there is no server.',
-  },
-  {
-    q: 'Why is it called "tickle"?',
-    a: "A tickle is the gentlest possible nudge. It's a recurring reminder to reach out to someone — not an alert, not a task, not a ping.",
-  },
-  {
-    q: 'Can I use it without giving access to my contacts?',
-    a: 'Yes. Add contacts manually, or import from a LinkedIn CSV. Phonebook access is optional.',
-  },
+const TRUST = [
+  { n: '0', l: 'servers', s: 'No backend' },
+  { n: '0', l: 'accounts', s: 'No signup' },
+  { n: '0', l: 'tracking', s: 'No analytics' },
+  { n: '100%', l: 'local', s: 'On-device only' },
+  { n: '2', l: 'platforms', s: 'iOS + Android' },
+] as const
+
+type Platform = 'ios' | 'android'
+const SCREENSHOTS: Array<{ label: string; sub: string; screen: 'network' | 'tickle' | 'compose' | 'settings'; platform: Platform }> = [
+  { label: 'Network', sub: 'Your people, sorted', screen: 'network', platform: 'ios' },
+  { label: 'Tickle', sub: 'Today, upcoming, snoozed', screen: 'tickle', platform: 'android' },
+  { label: 'Compose', sub: 'SMS without switching apps', screen: 'compose', platform: 'android' },
+  { label: 'Settings', sub: 'Import, templates, version', screen: 'settings', platform: 'ios' },
 ]
+
+const PRIVACY_POINTS: Array<[string, string]> = [
+  ['No cloud', 'Data never leaves your phone'],
+  ['No account', 'Nothing to sign up for'],
+  ['No analytics', "We don't know you exist"],
+  ['Open data', 'Export your contacts anytime'],
+]
+
+// ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function HomePage() {
   return (
-    <div className="bg-bg text-ink">
-      {/* ── Spec strip ─────────────────────────────────────────────────────── */}
-      <div className="spec-strip border-b border-ink font-mono text-[10px] tracking-[0.02em] text-ink-3">
-        <span>TICKLR/INDEX · v1.0.0 · 2026-04-29</span>
-        <span className="hidden sm:inline">iOS 17+ · Android 8+ · LOCAL-ONLY</span>
-        <span className="sm:text-right">xaymaca/ticklr · 100% on-device</span>
+    <div className="min-h-screen overflow-x-hidden" style={{ background: D5.bg, color: D5.fg2 }}>
+      <SpecStrip />
+      <Nav />
+      <Hero />
+      <TrustMarquee />
+      <FeatureIndex />
+      <ScreenshotsGallery />
+      <PrivacySection />
+      <FinalCTA />
+      <Footer />
+    </div>
+  )
+}
+
+// ─── Spec strip ───────────────────────────────────────────────────────────────
+
+function SpecStrip() {
+  return (
+    <div
+      className="hidden md:flex font-mono"
+      style={{
+        justifyContent: 'space-between',
+        padding: '8px 64px',
+        fontSize: 10,
+        color: D5.fg4,
+        borderBottom: `1px solid ${D5.border}`,
+        letterSpacing: '0.05em',
+        position: 'relative',
+        zIndex: 5,
+      }}
+    >
+      <span>TICKLR/v1.0.0 · 2026-04-29</span>
+      <span style={{ color: D5.amber }}>● ANDROID v1.0 — SHIPPED</span>
+      <span>iOS 17+ · Android 8+ · LOCAL-ONLY</span>
+    </div>
+  )
+}
+
+// ─── Nav ──────────────────────────────────────────────────────────────────────
+
+function Nav() {
+  return (
+    <nav
+      className="sticky top-0 z-50 flex items-center justify-between px-6 md:px-16 py-4 md:py-5 backdrop-blur-md"
+      style={{
+        borderBottom: `1px solid ${D5.border}`,
+        background: 'rgba(8,12,20,0.7)',
+      }}
+    >
+      <Link href="/" className="flex items-center gap-3 no-underline">
+        <div className="w-8 h-8 rounded-lg overflow-hidden flex-shrink-0">
+          <Image src="/assets/app-icon.png" alt="Ticklr" width={32} height={32} className="w-full h-full object-cover" />
+        </div>
+        <span className="font-bebas text-2xl tracking-wider" style={{ color: D5.fg1 }}>
+          Ticklr
+        </span>
+      </Link>
+
+      <div className="hidden lg:flex font-mono text-xs gap-8" style={{ color: D5.fg3 }}>
+        <a href="#features" className="hover:text-white transition-colors">§01 Features</a>
+        <a href="#privacy" className="hover:text-white transition-colors">§02 Privacy</a>
+        <a href="#screens" className="hover:text-white transition-colors">§03 Screens</a>
+        <Link href="/support" className="hover:text-white transition-colors">§04 Support</Link>
       </div>
 
-      {/* ── Nav ────────────────────────────────────────────────────────────── */}
-      <nav className="site-nav border-b border-ink flex items-center justify-between gap-4">
-        <Link href="/" className="flex items-center gap-3.5 flex-shrink-0">
-          <div className="w-9 h-9 border border-ink overflow-hidden flex-shrink-0">
-            <Image
-              src="/assets/app-icon.png"
-              alt=""
-              width={36}
-              height={36}
-              className="w-full h-full object-cover"
-              style={{ filter: 'grayscale(0.3)' }}
-              priority
-            />
-          </div>
-          <span className="font-sans text-[22px] font-extrabold tracking-[-0.02em] lowercase text-ink">
-            ticklr<span className="text-amber">.</span>
-          </span>
-        </Link>
+      <div className="flex items-center gap-2.5">
+        <a
+          href="https://apps.apple.com/us/app/ticklr/id6760884034"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hidden sm:inline-flex items-center gap-2 px-3.5 py-2 rounded-[10px] text-[13px] font-semibold transition-colors hover:bg-white/5"
+          style={{ color: D5.fg2, border: `1px solid ${D5.borderStrong}` }}
+        >
+          <AppleIcon size={14} />
+          App Store
+        </a>
+        <a
+          href="#"
+          className="inline-flex items-center gap-2 px-3.5 py-2 rounded-[10px] text-[13px] font-bold transition-all hover:brightness-110"
+          style={{ background: D5.amber, color: '#0A1628' }}
+        >
+          <PlayIcon size={13} />
+          Google Play
+        </a>
+      </div>
+    </nav>
+  )
+}
 
-        <div className="hidden lg:flex gap-8 font-mono text-xs text-ink">
-          <a href="#index" className="hover:opacity-70 transition-opacity">§01 Index</a>
-          <a href="#features" className="hover:opacity-70 transition-opacity">§02 Features</a>
-          <a href="#privacy" className="hover:opacity-70 transition-opacity">§03 Privacy</a>
-          <a href="#faq" className="hover:opacity-70 transition-opacity">§04 FAQ</a>
-          <a href="#download" className="hover:opacity-70 transition-opacity">§05 Download</a>
-        </div>
+// ─── Hero ─────────────────────────────────────────────────────────────────────
 
-        <div className="flex border border-ink">
-          <a
-            href={APP_STORE_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 font-mono text-xs text-ink border-r border-ink hover:opacity-70 transition-opacity"
-            style={{ padding: '10px 16px' }}
+function Hero() {
+  return (
+    <section className="relative px-6 md:px-16 pt-16 md:pt-20 pb-12 md:pb-16">
+      <div
+        className="pointer-events-none absolute left-1/2 -translate-x-1/2 -top-24 w-[1200px] max-w-[150%] h-[700px] rounded-full"
+        style={{
+          background: 'radial-gradient(ellipse at center, rgba(37,99,235,0.18) 0%, transparent 65%)',
+          filter: 'blur(40px)',
+        }}
+      />
+
+      <div className="relative max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-[1.05fr_0.95fr] gap-12 items-center">
+        <div className="relative">
+          <motion.div
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            custom={0}
+            className="inline-flex items-center gap-2.5 mb-7 pl-2 pr-3.5 py-1.5 rounded-full"
+            style={{
+              background: 'rgba(245,200,66,0.08)',
+              border: '1px solid rgba(245,200,66,0.30)',
+            }}
           >
-            <AppleIcon size={14} /> ./app-store
-          </a>
-          <a
-            href={PLAY_STORE_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 font-mono text-xs font-bold bg-amber text-amber-ink hover:opacity-80 transition-opacity"
-            style={{ padding: '10px 16px' }}
+            <span
+              className="px-2.5 py-[3px] rounded-full text-[10px] font-extrabold"
+              style={{ background: D5.amber, color: '#0A1628', letterSpacing: '0.12em' }}
+            >
+              NEW
+            </span>
+            <span className="text-xs font-semibold" style={{ color: D5.amber, letterSpacing: '0.05em' }}>
+              Now on Android · Already on iOS
+            </span>
+          </motion.div>
+
+          <motion.h1
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            custom={1}
+            className="font-bebas text-7xl sm:text-8xl md:text-9xl lg:text-[130px] mb-7"
+            style={{ color: D5.fg1, lineHeight: 0.92, letterSpacing: '0.005em' }}
           >
-            <PlayIcon size={14} /> ./play-store
-          </a>
-        </div>
-      </nav>
+            Your<br />
+            <span style={{ color: D5.amber }}>People</span>
+            <br />
+            Matter.
+          </motion.h1>
 
-      {/* ── Hero ───────────────────────────────────────────────────────────── */}
-      <section id="index" className="hero relative border-b border-ink">
-        {/* hairline 12-col grid */}
-        <div className="absolute inset-0 hidden md:grid pointer-events-none" style={{ gridTemplateColumns: 'repeat(12, 1fr)' }}>
-          {Array.from({ length: 13 }).map((_, i) => (
-            <div key={i} style={{ borderLeft: i > 0 && i < 12 ? '0.5px solid rgba(10,10,10,0.10)' : 'none' }} />
-          ))}
-        </div>
-
-        <div className="hero-inner relative">
-          {/* meta row */}
-          <div
-            className="hero-meta flex flex-col gap-2 sm:flex-row sm:justify-between font-mono text-[11px] text-ink-3"
-            style={{ paddingBottom: 16, borderBottom: '1px solid var(--rule-soft)' }}
+          <motion.p
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            custom={2}
+            className="text-lg md:text-[19px] leading-relaxed max-w-md mb-9"
+            style={{ color: D5.fg3 }}
           >
-            <span>// HERO_001 — public release</span>
-            <span className="text-amber font-bold">● NEW: ANDROID v1.0 → SHIPPED</span>
-            <span>updated 04.29.2026</span>
-          </div>
+            Private contact reminders for the relationships that matter most.
+            <br />
+            <span style={{ color: D5.fg2 }}>On your device. Nowhere else.</span>
+          </motion.p>
 
-          {/* wordmark slab */}
-          <div className="relative" style={{ padding: '40px 0 24px' }}>
-            <h1
-              className="font-sans font-black lowercase text-ink m-0"
+          <motion.div
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            custom={3}
+            className="flex flex-wrap gap-3.5 mb-6"
+          >
+            <a
+              href="https://apps.apple.com/us/app/ticklr/id6760884034"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2.5 px-5 py-3.5 rounded-2xl text-sm font-bold transition-all hover:scale-[1.03] hover:brightness-110 active:scale-95"
               style={{
-                fontSize: 'clamp(72px, 19.4vw, 280px)',
-                lineHeight: 0.82,
-                letterSpacing: '-0.06em',
+                background: D5.amber,
+                color: '#0A1628',
+                boxShadow: '0 4px 24px rgba(245,200,66,0.25)',
               }}
             >
-              your<br />
-              people<br />
-              matter<span className="text-amber">.</span>
-            </h1>
-
-            {/* phone cutout — only on extra-wide screens where the text leaves room */}
-            <div className="hero-phone hidden xl:block absolute" style={{ right: 32, top: 60 }}>
-              <div className="relative" style={{ padding: 12, border: '1px solid var(--ink)', background: 'var(--bg)' }}>
-                <AndroidMock w={240} h={500} />
-                <div
-                  className="absolute font-mono font-bold bg-amber text-amber-ink"
-                  style={{ top: -18, left: -1, fontSize: 10, padding: '3px 10px', letterSpacing: '0.05em' }}
-                >
-                  FIG.01 — TICKLE / ANDROID / DARK
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* spec block */}
-          <div className="hero-spec">
-            <div className="hero-col hero-col-desc">
-              <div className="font-mono text-[11px] text-ink-4 mb-2">// description</div>
-              <p className="font-sans text-[19px] leading-[1.5] text-ink m-0 font-medium">
-                Private contact reminders for the relationships that matter most.
-                <br />
-                <span className="text-ink-3">Everything stays on your device. No accounts. No cloud. No analytics.</span>
-              </p>
-            </div>
-
-            <div className="hero-col hero-col-install">
-              <div className="font-mono text-[11px] text-ink-4 mb-3">// install</div>
-              <div className="flex flex-col border border-ink">
-                <a
-                  href={APP_STORE_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-between gap-2.5 font-mono text-[13px] text-ink border-b border-ink hover:opacity-70 transition-opacity"
-                  style={{ padding: '12px 14px' }}
-                >
-                  <span className="flex items-center gap-2.5"><AppleIcon size={16} /> App Store</span>
-                  <span className="text-ink-4">↘</span>
-                </a>
-                <a
-                  href={PLAY_STORE_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-between gap-2.5 font-mono text-[13px] font-bold bg-amber text-amber-ink hover:opacity-80 transition-opacity"
-                  style={{ padding: '12px 14px' }}
-                >
-                  <span className="flex items-center gap-2.5"><PlayIcon size={15} /> Google Play</span>
-                  <span>↘ NEW</span>
-                </a>
-              </div>
-            </div>
-
-            <div className="hero-col hero-col-guarantees">
-              <div className="font-mono text-[11px] text-ink-4 mb-3">// guarantees</div>
-              <div className="grid grid-cols-2" style={{ gap: 12 }}>
-                {[['00', 'servers'], ['00', 'accounts'], ['00', 'tracking'], ['100', 'local %']].map(([n, l]) => (
-                  <div key={l} className="flex items-baseline gap-2">
-                    <span className="font-sans text-ink" style={{ fontSize: 32, fontWeight: 800, letterSpacing: '-0.04em' }}>{n}</span>
-                    <span className="font-mono text-[11px] text-ink-3">{l}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── §02 Feature Index ──────────────────────────────────────────────── */}
-      <section id="features" className="border-b border-ink">
-        <div className="section-head flex justify-between items-baseline">
-          <h2
-            className="font-sans font-black lowercase text-ink m-0"
-            style={{ fontSize: 'clamp(36px, 6vw, 64px)', letterSpacing: '-0.04em' }}
-          >
-            §02 — feature index
-          </h2>
-          <div className="font-mono text-[11px] text-ink-3 hidden sm:block">4 entries · sorted by id</div>
-        </div>
-
-        <div className="feature-table-head font-mono uppercase text-ink-4">
-          <span>id</span><span>name</span><span>description</span><span>availability</span><span className="text-right">→</span>
-        </div>
-
-        {FEATURES.map((f, i) => (
-          <div
-            key={f.id}
-            className="feature-row"
-            style={{ borderBottom: i < FEATURES.length - 1 ? '1px solid var(--rule-soft)' : 'none' }}
-          >
-            <span className="font-mono font-bold text-amber" style={{ fontSize: 14 }}>§{f.id}</span>
-            <span className="font-sans font-bold text-ink" style={{ fontSize: 22, letterSpacing: '-0.01em' }}>{f.name}</span>
-            <span className="font-sans text-ink-3" style={{ fontSize: 14, lineHeight: 1.55 }}>{f.desc}</span>
-            <span className="feature-avail font-mono text-ink-3" style={{ fontSize: 11 }}>● {f.avail}</span>
-            <span className="feature-arrow text-right font-mono text-ink" style={{ fontSize: 16 }}>→</span>
-          </div>
-        ))}
-      </section>
-
-      {/* ── Android launch strip (amber) ───────────────────────────────────── */}
-      <section className="android-strip border-b border-ink" style={{ background: '#F5C842', color: '#1a1a1a' }}>
-        <div className="android-strip-inner">
-          <div>
-            <div className="font-mono uppercase mb-4" style={{ fontSize: 11, letterSpacing: '0.16em' }}>
-              // announcement / 2026-04-29
-            </div>
-            <h2
-              className="font-sans font-black lowercase m-0"
-              style={{ fontSize: 'clamp(56px, 10vw, 144px)', lineHeight: 0.85, letterSpacing: '-0.05em' }}
+              <AppleIcon size={20} />
+              App Store
+            </a>
+            <a
+              href="#"
+              className="inline-flex items-center gap-2.5 px-5 py-3.5 rounded-2xl text-sm font-bold transition-colors hover:bg-white/5"
+              style={{ color: D5.fg1, border: `1px solid ${D5.borderStrong}` }}
             >
-              now on
-              <br />
-              <span style={{ textDecoration: 'underline', textDecorationThickness: '8px', textUnderlineOffset: '12px' }}>
-                android.
+              <PlayIcon size={18} />
+              Google Play
+            </a>
+          </motion.div>
+
+          <motion.div
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            custom={4}
+            className="font-mono text-[11px]"
+            style={{ color: D5.fg5, letterSpacing: '0.02em' }}
+          >
+            free · no account · iOS 17+ · Android 8+
+          </motion.div>
+        </div>
+
+        <motion.div
+          variants={fadeUp}
+          initial="hidden"
+          animate="visible"
+          custom={2}
+          className="relative h-[640px] md:h-[700px] flex justify-center lg:justify-end items-center"
+          aria-hidden
+        >
+          {/* iOS phone (back, rotated left) */}
+          <div className="absolute right-[42%] sm:right-[36%] lg:right-[200px] top-10 lg:top-[60px]" style={{ transform: 'rotate(-4deg)' }}>
+            <div
+              className="absolute font-mono text-[10px] uppercase"
+              style={{ top: -22, left: 16, color: D5.fg4, letterSpacing: '0.16em' }}
+            >
+              iOS
+            </div>
+            <IOSMock w={240} h={500} screen="network" />
+          </div>
+
+          {/* Android phone (front, rotated right) */}
+          <div className="absolute right-2 sm:right-4 lg:right-0 top-2 lg:top-[30px]" style={{ transform: 'rotate(3deg)' }}>
+            <div
+              className="absolute font-mono text-[10px] uppercase"
+              style={{ top: -22, right: 16, color: D5.amber, letterSpacing: '0.16em' }}
+            >
+              Android · new
+            </div>
+            <AndroidMock w={260} h={540} screen="tickle" />
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  )
+}
+
+// ─── Trust marquee ────────────────────────────────────────────────────────────
+
+function TrustMarquee() {
+  return (
+    <section
+      className="py-10"
+      style={{ borderTop: `1px solid ${D5.border}`, borderBottom: `1px solid ${D5.border}`, background: D5.bgRaised }}
+    >
+      <div className="max-w-7xl mx-auto px-6 md:px-16">
+        <div className="flex flex-wrap justify-around items-center gap-x-10 gap-y-8">
+          {TRUST.map((p, i) => (
+            <div key={i} className="flex items-baseline gap-3.5">
+              <span className="font-bebas leading-none" style={{ fontSize: 56, color: D5.fg1, letterSpacing: '0.02em' }}>
+                {p.n}
               </span>
-            </h2>
-            <p className="font-sans m-0" style={{ fontSize: 18, lineHeight: 1.55, marginTop: 28, maxWidth: 540, color: '#1a1a1a' }}>
-              One quiet companion, native to both phones. Built ground-up in Jetpack Compose. Stores everything locally with Room. The privacy story is identical to iOS — there is no server.
-            </p>
-            <div className="inline-flex flex-wrap mt-8" style={{ border: '1.5px solid #0a0a0a' }}>
-              <a
-                href={PLAY_STORE_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2.5 font-mono font-bold hover:opacity-80 transition-opacity"
-                style={{ padding: '14px 22px', fontSize: 13, color: '#0a0a0a', borderRight: '1.5px solid #0a0a0a' }}
-              >
-                <PlayIcon size={16} /> install on android
-              </a>
-              <a
-                href="#features"
-                className="inline-flex items-center gap-2.5 font-mono hover:opacity-80 transition-opacity"
-                style={{ padding: '14px 22px', fontSize: 13, color: '#0a0a0a' }}
-              >
-                read changelog →
-              </a>
-            </div>
-          </div>
-
-          <div className="android-strip-phone hidden md:flex justify-end">
-            <div className="relative" style={{ padding: 16, background: 'var(--bg)', border: '1.5px solid var(--ink)' }}>
-              <AndroidMock w={260} h={520} />
-              <div
-                className="absolute font-mono font-bold"
-                style={{ bottom: -1, right: -1, fontSize: 10, padding: '4px 10px', background: '#0a0a0a', color: '#F5C842' }}
-              >
-                FIG.02 — ANDROID
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── §03 Privacy Manifesto (dark) ───────────────────────────────────── */}
-      <section id="privacy" className="privacy border-b border-ink" style={{ background: '#0a0a0a', color: '#fafaf7' }}>
-        <div className="privacy-inner">
-          <div className="privacy-header">
-            <h2
-              className="font-sans font-black lowercase m-0"
-              style={{ fontSize: 'clamp(48px, 7vw, 96px)', lineHeight: 0.9, letterSpacing: '-0.04em' }}
-            >
-              §03 privacy
-              <br />
-              manifesto.
-            </h2>
-            <p className="font-sans m-0 self-end" style={{ fontSize: 18, lineHeight: 1.6, color: 'rgba(250,250,247,0.7)' }}>
-              We don&apos;t have a privacy policy that lets us collect your data and explain it later. We have an architecture that makes collecting impossible.
-            </p>
-          </div>
-
-          <div className="privacy-grid" style={{ borderTop: '1px solid rgba(250,250,247,0.2)' }}>
-            {PRIVACY.map(([n, t, b]) => (
-              <div key={n} className="privacy-cell" style={{ padding: '32px 24px' }}>
-                <div className="font-mono text-amber mb-6" style={{ fontSize: 13 }}>{n}.</div>
-                <div className="font-sans lowercase mb-3" style={{ fontSize: 28, fontWeight: 800, letterSpacing: '-0.02em' }}>
-                  {t}
+              <div>
+                <div className="font-bebas leading-none" style={{ fontSize: 24, color: D5.fg2, letterSpacing: '0.02em' }}>
+                  {p.l}
                 </div>
-                <p className="font-sans m-0" style={{ fontSize: 13, lineHeight: 1.55, color: 'rgba(250,250,247,0.7)' }}>{b}</p>
+                <div className="font-mono text-[11px] mt-1" style={{ color: D5.fg4 }}>
+                  {p.s}
+                </div>
               </div>
-            ))}
-          </div>
-
-          <div className="mt-10">
-            <Link
-              href="/privacy"
-              className="font-mono inline-flex items-center gap-2 hover:opacity-70 transition-opacity"
-              style={{ fontSize: 12, color: 'rgba(250,250,247,0.7)' }}
-            >
-              read full privacy policy →
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ── §04 Q&A ────────────────────────────────────────────────────────── */}
-      <section id="faq" className="border-b border-ink">
-        <div className="section-head flex justify-between items-baseline border-b border-ink">
-          <h2
-            className="font-sans font-black lowercase text-ink m-0"
-            style={{ fontSize: 'clamp(36px, 6vw, 64px)', letterSpacing: '-0.04em' }}
-          >
-            §04 — q&amp;a
-          </h2>
-          <div className="font-mono text-[11px] text-ink-3 hidden sm:block">{FAQ.length} entries</div>
-        </div>
-
-        {FAQ.map((f, i) => (
-          <div
-            key={f.q}
-            className="faq-row"
-            style={{ borderBottom: i < FAQ.length - 1 ? '1px solid var(--rule-soft)' : 'none' }}
-          >
-            <div className="font-mono font-bold text-amber" style={{ fontSize: 13 }}>
-              q.{String(i + 1).padStart(2, '0')}
             </div>
-            <div className="font-sans font-bold text-ink" style={{ fontSize: 22, letterSpacing: '-0.015em' }}>{f.q}</div>
-            <div className="font-sans text-ink-3" style={{ fontSize: 14, lineHeight: 1.6 }}>{f.a}</div>
-          </div>
-        ))}
-      </section>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
 
-      {/* ── Final CTA ──────────────────────────────────────────────────────── */}
-      <section id="download" className="final-cta text-center border-b border-ink">
-        <h2
-          className="font-sans font-black lowercase text-ink m-0"
+// ─── Brutalist feature index ──────────────────────────────────────────────────
+
+function FeatureIndex() {
+  return (
+    <section id="features" className="relative px-6 md:px-16 pt-24 md:pt-32 pb-20">
+      <div className="max-w-7xl mx-auto">
+        <div className="flex flex-col md:flex-row md:items-baseline md:justify-between mb-8 gap-3">
+          <div>
+            <div
+              className="font-mono uppercase mb-3.5"
+              style={{ fontSize: 11, color: D5.cobalt, letterSpacing: '0.16em' }}
+            >
+              // §01 — what it does
+            </div>
+            <h2
+              className="font-bebas m-0"
+              style={{ fontSize: 'clamp(48px, 8vw, 88px)', lineHeight: 0.95, color: D5.fg1, letterSpacing: '0.02em' }}
+            >
+              Feature Index.
+            </h2>
+          </div>
+          <div className="font-mono text-[11px] md:text-right" style={{ color: D5.fg4 }}>
+            4 entries · sorted by id
+            <br />
+            <span style={{ color: D5.fg5 }}>everything · nothing more</span>
+          </div>
+        </div>
+
+        {/* table header */}
+        <div
+          className="hidden md:grid font-mono uppercase"
           style={{
-            fontSize: 'clamp(96px, 14vw, 200px)',
-            lineHeight: 0.85,
-            letterSpacing: '-0.05em',
-            marginBottom: 32,
+            gridTemplateColumns: '70px 260px 1fr 200px 60px',
+            borderTop: `1px solid ${D5.borderStrong}`,
+            borderBottom: `1px solid ${D5.borderStrong}`,
+            padding: '10px 0',
+            fontSize: 10,
+            color: D5.fg4,
+            letterSpacing: '0.14em',
           }}
         >
-          install<span className="text-amber">.</span>
+          <span>id</span>
+          <span>name</span>
+          <span>description</span>
+          <span>availability</span>
+          <span className="text-right">→</span>
+        </div>
+
+        {/* rows */}
+        {FEATURES.map((f, i, arr) => {
+          const isLast = i === arr.length - 1
+          return (
+            <motion.div
+              key={f.id}
+              variants={fadeUp}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: '-80px' }}
+              custom={i}
+              className="grid items-baseline py-7 md:py-7"
+              style={{
+                gridTemplateColumns: '70px 1fr',
+                borderBottom: isLast ? `1px solid ${D5.borderStrong}` : `1px solid ${D5.border}`,
+              }}
+            >
+              <span className="font-mono font-bold text-sm" style={{ color: f.color }}>
+                §{f.id}
+              </span>
+              <div className="md:grid md:items-baseline" style={{ gridTemplateColumns: '260px 1fr 200px 60px' }}>
+                <div>
+                  <div
+                    className="font-bebas leading-none"
+                    style={{ fontSize: 32, color: D5.fg1, letterSpacing: '0.02em' }}
+                  >
+                    {f.name}
+                  </div>
+                  <div
+                    className="font-mono mt-2"
+                    style={{ fontSize: 10, color: D5.fg5, letterSpacing: '0.04em' }}
+                  >
+                    {f.tech}
+                  </div>
+                </div>
+                <span className="block mt-3 md:mt-0 md:pr-8 text-sm leading-relaxed" style={{ color: D5.fg3 }}>
+                  {f.desc}
+                </span>
+                <span className="hidden md:inline font-mono text-[11px]" style={{ color: D5.fg3 }}>
+                  ● {f.avail}
+                </span>
+                <span className="hidden md:inline text-right font-mono text-base" style={{ color: D5.fg3 }}>
+                  →
+                </span>
+              </div>
+            </motion.div>
+          )
+        })}
+      </div>
+    </section>
+  )
+}
+
+// ─── Screenshots gallery ──────────────────────────────────────────────────────
+
+function ScreenshotsGallery() {
+  return (
+    <section id="screens" className="relative px-6 md:px-16 py-12 md:py-20">
+      <div className="max-w-7xl mx-auto">
+        <div className="flex flex-col md:flex-row md:items-baseline md:justify-between mb-10 gap-3">
+          <div>
+            <div
+              className="font-mono uppercase mb-3"
+              style={{ fontSize: 11, color: D5.cobalt, letterSpacing: '0.16em' }}
+            >
+              // §02 — look around
+            </div>
+            <h2
+              className="font-bebas m-0"
+              style={{ fontSize: 'clamp(40px, 6vw, 64px)', color: D5.fg1, letterSpacing: '0.02em' }}
+            >
+              Four tabs. No clutter.
+            </h2>
+          </div>
+          <p className="text-sm leading-snug max-w-xs" style={{ color: D5.fg3 }}>
+            Network, Tickle, Compose, Settings. The whole app, on one bottom bar.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {SCREENSHOTS.map((s, i) => (
+            <motion.div
+              key={s.label}
+              variants={fadeUp}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: '-80px' }}
+              custom={i}
+              className="overflow-hidden rounded-[20px]"
+              style={{ background: D5.bgRaised, border: `1px solid ${D5.border}` }}
+            >
+              <div
+                className="h-[380px] relative overflow-hidden flex justify-center pt-5"
+                style={{ background: 'radial-gradient(ellipse at top, rgba(37,99,235,0.10), transparent 60%)' }}
+              >
+                {s.platform === 'android' ? (
+                  <AndroidMock w={220} h={420} screen={s.screen} />
+                ) : (
+                  <IOSMock
+                    w={220}
+                    h={420}
+                    screen={s.screen as 'network' | 'tickle' | 'compose' | 'settings'}
+                  />
+                )}
+              </div>
+              <div className="p-5" style={{ borderTop: `1px solid ${D5.border}` }}>
+                <div className="flex items-center justify-between">
+                  <span className="font-bebas" style={{ fontSize: 22, color: D5.fg1, letterSpacing: '0.02em' }}>
+                    {s.label}
+                  </span>
+                  <span className="font-mono text-[9px]" style={{ color: D5.fg5, letterSpacing: '0.1em' }}>
+                    {s.platform === 'android' ? 'ANDROID' : 'iOS'}
+                  </span>
+                </div>
+                <div className="text-xs mt-1" style={{ color: D5.fg3 }}>
+                  {s.sub}
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+// ─── Privacy ──────────────────────────────────────────────────────────────────
+
+function PrivacySection() {
+  return (
+    <section id="privacy" className="px-6 md:px-16 py-12 md:py-20">
+      <div className="max-w-7xl mx-auto">
+        <div
+          className="relative overflow-hidden rounded-[28px] px-8 py-14 md:px-16 md:py-20"
+          style={{
+            background: 'linear-gradient(135deg, rgba(14,21,38,0.95), rgba(8,15,30,0.95))',
+            border: '1px solid rgba(37,99,235,0.20)',
+          }}
+        >
+          <div
+            className="pointer-events-none absolute inset-0"
+            style={{ background: 'radial-gradient(ellipse at 50% 0%, rgba(37,99,235,0.16) 0%, transparent 60%)' }}
+          />
+          <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            <div>
+              <div
+                className="font-mono uppercase mb-4"
+                style={{ fontSize: 11, color: D5.cobalt, letterSpacing: '0.16em' }}
+              >
+                // §03 — privacy
+              </div>
+              <h2
+                className="font-bebas mb-5"
+                style={{ fontSize: 'clamp(44px, 6vw, 76px)', lineHeight: 0.95, color: D5.fg1, letterSpacing: '0.02em' }}
+              >
+                Built for privacy.
+                <br />
+                <span style={{ color: D5.amber }}>Not as an afterthought.</span>
+              </h2>
+              <p className="text-base leading-relaxed max-w-xl mb-4" style={{ color: D5.fg3 }}>
+                Ticklr stores everything in your phone&apos;s secure local database — Apple SwiftData on iOS, Android
+                Room on Android. We have no servers and no analytics — and neither we nor anyone else can access your
+                data, because none of it ever leaves your device.
+              </p>
+              <p className="text-sm leading-relaxed mb-6" style={{ color: D5.fg4 }}>
+                No account to create. No password to forget. No breach to worry about.
+              </p>
+              <Link
+                href="/privacy"
+                className="inline-flex items-center gap-2 text-sm font-medium transition-colors hover:brightness-125"
+                style={{ color: D5.cobalt }}
+              >
+                Read our full privacy policy →
+              </Link>
+            </div>
+
+            <div className="grid gap-3">
+              {PRIVACY_POINTS.map(([title, sub]) => (
+                <div
+                  key={title}
+                  className="flex items-center gap-4 p-5 rounded-[14px]"
+                  style={{ background: 'rgba(0,0,0,0.30)', border: `1px solid ${D5.border}` }}
+                >
+                  <div
+                    className="w-8 h-8 rounded-[10px] flex items-center justify-center flex-shrink-0"
+                    style={{ background: 'rgba(37,99,235,0.18)' }}
+                  >
+                    <CheckIcon size={16} color={D5.cobalt} />
+                  </div>
+                  <div>
+                    <div className="text-sm font-semibold" style={{ color: D5.fg1 }}>
+                      {title}
+                    </div>
+                    <div className="text-xs mt-0.5" style={{ color: D5.fg3 }}>
+                      {sub}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+// ─── Final CTA ────────────────────────────────────────────────────────────────
+
+function FinalCTA() {
+  return (
+    <section className="relative px-6 md:px-16 py-12 md:py-20 text-center">
+      <div
+        className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-[800px] max-w-[120%] h-[400px] rounded-full"
+        style={{
+          background: 'radial-gradient(ellipse at center, rgba(245,200,66,0.10) 0%, transparent 70%)',
+          filter: 'blur(40px)',
+        }}
+      />
+      <div className="relative inline-flex flex-col items-center max-w-3xl mx-auto">
+        <div
+          className="w-[72px] h-[72px] rounded-[18px] overflow-hidden mb-8"
+          style={{ boxShadow: '0 12px 40px rgba(0,0,0,0.5)' }}
+        >
+          <Image src="/assets/app-icon.png" alt="Ticklr app icon" width={72} height={72} className="w-full h-full" />
+        </div>
+        <h2
+          className="font-bebas mb-4"
+          style={{ fontSize: 'clamp(44px, 7vw, 80px)', lineHeight: 0.95, color: D5.fg1, letterSpacing: '0.02em' }}
+        >
+          Stay close to your people.
         </h2>
-        <p className="font-sans text-ink-3 m-0" style={{ fontSize: 18, marginBottom: 36 }}>
-          Free. No subscription. No tracking, ever.
+        <p className="text-base mb-9" style={{ color: D5.fg3 }}>
+          Free on the App Store and Google Play. No subscription. No tracking. Ever.
         </p>
-        <div className="inline-flex flex-wrap justify-center" style={{ border: '1.5px solid var(--ink)' }}>
+        <div className="flex flex-wrap justify-center gap-3.5">
           <a
-            href={APP_STORE_URL}
+            href="https://apps.apple.com/us/app/ticklr/id6760884034"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2.5 font-mono font-bold text-ink hover:opacity-70 transition-opacity"
-            style={{ padding: '18px 28px', fontSize: 14, borderRight: '1.5px solid var(--ink)' }}
+            className="inline-flex items-center gap-2.5 px-7 py-4 rounded-2xl text-[15px] font-bold transition-all hover:scale-[1.03] hover:brightness-110 active:scale-95"
+            style={{ background: D5.amber, color: '#0A1628', boxShadow: '0 6px 32px rgba(245,200,66,0.30)' }}
           >
-            <AppleIcon size={18} /> App Store
+            <AppleIcon size={22} />
+            App Store
           </a>
           <a
-            href={PLAY_STORE_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2.5 font-mono font-bold bg-amber text-amber-ink hover:opacity-80 transition-opacity"
-            style={{ padding: '18px 28px', fontSize: 14 }}
+            href="#"
+            className="inline-flex items-center gap-2.5 px-7 py-4 rounded-2xl text-[15px] font-bold transition-all hover:brightness-95 active:scale-95"
+            style={{ background: D5.fg1, color: '#0A1628' }}
           >
-            <PlayIcon size={16} /> Google Play · NEW
+            <PlayIcon size={20} />
+            Google Play
           </a>
         </div>
-      </section>
+      </div>
+    </section>
+  )
+}
 
-      {/* ── Footer ─────────────────────────────────────────────────────────── */}
-      <footer className="footer-grid font-mono text-ink-3" style={{ fontSize: 11 }}>
-        <span>© 2026 xaymaca</span>
-        <Link href="/privacy" className="hover:text-ink transition-colors">./privacy-policy</Link>
-        <Link href="/support" className="hover:text-ink transition-colors">./support</Link>
-        <span className="text-right">built with quiet intent · v1.0.0</span>
-      </footer>
-    </div>
+// ─── Footer ───────────────────────────────────────────────────────────────────
+
+function Footer() {
+  return (
+    <footer
+      className="px-6 md:px-16 py-6 flex flex-col md:flex-row items-center justify-between gap-3 font-mono text-[11px]"
+      style={{ borderTop: `1px solid ${D5.border}`, color: D5.fg4, letterSpacing: '0.04em' }}
+    >
+      <span>© {new Date().getFullYear()} Xaymaca · built with quiet intent · v1.0.0</span>
+      <div className="flex gap-5">
+        <Link href="/privacy" className="hover:text-slate-300 transition-colors">
+          ./privacy
+        </Link>
+        <Link href="/support" className="hover:text-slate-300 transition-colors">
+          ./support
+        </Link>
+        <a href="https://xaymaca.com" target="_blank" rel="noopener noreferrer" className="hover:text-slate-300 transition-colors">
+          xaymaca.com
+        </a>
+      </div>
+    </footer>
   )
 }
