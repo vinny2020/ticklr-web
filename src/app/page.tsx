@@ -174,7 +174,9 @@ function Nav() {
           App Store
         </a>
         <a
-          href="#"
+          href="https://play.google.com/store/apps/details?id=com.xaymaca.sit"
+          target="_blank"
+          rel="noopener noreferrer"
           className="inline-flex items-center gap-2 px-3.5 py-2 rounded-[10px] text-[13px] font-bold transition-all hover:brightness-110"
           style={{ background: D5.amber, color: '#0A1628' }}
         >
@@ -272,7 +274,9 @@ function Hero() {
               App Store
             </a>
             <a
-              href="#"
+              href="https://play.google.com/store/apps/details?id=com.xaymaca.sit"
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex items-center gap-2.5 px-5 py-3.5 rounded-2xl text-sm font-bold transition-colors hover:bg-white/5"
               style={{ color: D5.fg1, border: `1px solid ${D5.borderStrong}` }}
             >
@@ -654,7 +658,9 @@ function FinalCTA() {
             App Store
           </a>
           <a
-            href="#"
+            href="https://play.google.com/store/apps/details?id=com.xaymaca.sit"
+            target="_blank"
+            rel="noopener noreferrer"
             className="inline-flex items-center gap-2.5 px-7 py-4 rounded-2xl text-[15px] font-bold transition-all hover:brightness-95 active:scale-95"
             style={{ background: D5.fg1, color: '#0A1628' }}
           >
