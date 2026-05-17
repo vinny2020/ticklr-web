@@ -215,7 +215,7 @@ function SettingsBody() {
         <Row title="Message templates" subtitle="Manage your quick sends" />
         <Row title="Notifications" subtitle="Alarm & Worker settings" last />
         <SH title="About" />
-        <Row title="Version" subtitle="1.0.0" />
+        <Row title="Version" subtitle="1.7.0" />
         <Row title="Built by Xaymaca" last />
       </div>
     </>

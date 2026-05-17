@@ -107,7 +107,7 @@ const SECTIONS: { id: string; title: string; body: React.ReactNode }[] = [
     body: (
       <p>
         Questions? Email us at{' '}
-        <a href={`mailto:${CONTACT_EMAIL}`} className="text-amber-ink bg-amber px-1 hover:opacity-80 transition-opacity font-bold">
+        <a href={`mailto:${CONTACT_EMAIL}`} className="text-ink underline underline-offset-4 decoration-2 hover:opacity-70 transition-opacity font-bold">
           {CONTACT_EMAIL}
         </a>
         .
@@ -121,7 +121,7 @@ export default function PrivacyPage() {
     <div className="bg-bg text-ink">
       {/* Spec strip */}
       <div className="spec-strip border-b border-ink font-mono text-[10px] tracking-[0.02em] text-ink-3">
-        <span>TICKLR/PRIVACY-POLICY · v1.0.0 · {EFFECTIVE_DATE}</span>
+        <span>TICKLR/PRIVACY-POLICY · v1.7.0 · {EFFECTIVE_DATE}</span>
         <span className="hidden sm:inline">DOCUMENT · NO TRACKING · LOCAL-ONLY</span>
         <span className="sm:text-right">xaymaca/ticklr</span>
       </div>
@@ -136,12 +136,12 @@ export default function PrivacyPage() {
               width={36}
               height={36}
               className="w-full h-full object-cover"
-              style={{ filter: 'grayscale(0.3)' }}
+              style={{ filter: 'grayscale(1)' }}
               priority
             />
           </div>
           <span className="font-sans text-[22px] font-extrabold tracking-[-0.02em] lowercase text-ink">
-            ticklr<span className="text-amber">.</span>
+            ticklr<span className="text-ink">.</span>
           </span>
         </Link>
         <Link
@@ -162,7 +162,7 @@ export default function PrivacyPage() {
           className="font-sans font-black lowercase text-ink m-0"
           style={{ fontSize: 'clamp(48px, 9vw, 120px)', lineHeight: 0.85, letterSpacing: '-0.05em' }}
         >
-          privacy<span className="text-amber">.</span>
+          privacy.
         </h1>
         <div className="font-mono text-[11px] text-ink-3">effective {EFFECTIVE_DATE} · {SECTIONS.length} entries</div>
       </section>
@@ -175,7 +175,7 @@ export default function PrivacyPage() {
             className="faq-row"
             style={{ borderBottom: i < SECTIONS.length - 1 ? '1px solid var(--rule-soft)' : 'none' }}
           >
-            <div className="font-mono font-bold text-amber" style={{ fontSize: 13 }}>§{s.id}</div>
+            <div className="font-mono font-bold text-ink-3" style={{ fontSize: 13 }}>§{s.id}</div>
             <h2 className="font-sans font-bold text-ink m-0" style={{ fontSize: 22, letterSpacing: '-0.015em' }}>
               {s.title}
             </h2>
@@ -189,7 +189,7 @@ export default function PrivacyPage() {
         <span>© 2026 xaymaca</span>
         <Link href="/" className="hover:text-ink transition-colors">./home</Link>
         <Link href="/support" className="hover:text-ink transition-colors">./support</Link>
-        <span className="text-right">v1.0.0</span>
+        <span className="text-right">v1.7.0</span>
       </footer>
     </div>
   )
