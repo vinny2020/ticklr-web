@@ -3,7 +3,8 @@
 @tailwind utilities;
 
 :root {
-  --bg: #fafaf7;
+  /* B/W tokens — used by /privacy and /support */
+  --bg: #ffffff;
   --ink: #0a0a0a;
   --ink-2: #1a1a1a;
   --ink-3: #4a4a4a;
@@ -11,6 +12,37 @@
   --rule-soft: rgba(10, 10, 10, 0.10);
   --amber: #F5C842;
   --amber-ink: #1a1a1a;
+
+  /* Warm tokens — used by / (home) */
+  --paper: #EFEAE0;
+  --paper-surface: #F4EFE3;
+  --paper-surface-2: #EFE9DB;
+  --paper-card: #FAF5E8;
+  --paper-card-alt: #FAF4E2;
+  --paper-highlight: #FBF7EE;
+  --warm-ink: #1A1F2A;
+  --warm-ink-2: #28241D;
+  --warm-ink-3: #3D4753;
+  --warm-ink-4: #6B5F4F;
+  --warm-ink-5: #9A8E7C;
+  --warm-border: rgba(60,42,20,0.10);
+  --warm-border-strong: rgba(60,42,20,0.18);
+  --mustard: #A7791C;
+  --burgundy: #9C3F3C;
+  --muteblue: #3F5C7A;
+  --forest: #4F6B47;
+  --terracotta: #B26342;
+}
+
+/* Paper-grain overlay reusable on warm surfaces */
+.paper-grain::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.06;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.22  0 0 0 0 0.14  0 0 0 0 0.06  0 0 0 0.65 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
 }
 
 html {

@@ -41,7 +41,7 @@ export default function SupportPage() {
     <div className="bg-bg text-ink">
       {/* Spec strip */}
       <div className="spec-strip border-b border-ink font-mono text-[10px] tracking-[0.02em] text-ink-3">
-        <span>TICKLR/SUPPORT · v1.0.0</span>
+        <span>TICKLR/SUPPORT · v1.7.0</span>
         <span className="hidden sm:inline">REPLIES WITHIN 1 BUSINESS DAY</span>
         <span className="sm:text-right">xaymaca/ticklr</span>
       </div>
@@ -56,12 +56,12 @@ export default function SupportPage() {
               width={36}
               height={36}
               className="w-full h-full object-cover"
-              style={{ filter: 'grayscale(0.3)' }}
+              style={{ filter: 'grayscale(1)' }}
               priority
             />
           </div>
           <span className="font-sans text-[22px] font-extrabold tracking-[-0.02em] lowercase text-ink">
-            ticklr<span className="text-amber">.</span>
+            ticklr<span className="text-ink">.</span>
           </span>
         </Link>
         <Link
@@ -82,13 +82,13 @@ export default function SupportPage() {
           className="font-sans font-black lowercase text-ink m-0"
           style={{ fontSize: 'clamp(48px, 9vw, 120px)', lineHeight: 0.85, letterSpacing: '-0.05em' }}
         >
-          support<span className="text-amber">.</span>
+          support.
         </h1>
         <p className="font-sans text-ink m-0 max-w-xl" style={{ fontSize: 16, lineHeight: 1.55, fontWeight: 500 }}>
           Need help? Email{' '}
           <a
             href={`mailto:${CONTACT_EMAIL}`}
-            className="bg-amber text-amber-ink px-1 font-bold hover:opacity-80 transition-opacity"
+            className="text-ink underline underline-offset-4 decoration-2 font-bold hover:opacity-70 transition-opacity"
           >
             {CONTACT_EMAIL}
           </a>{' '}
@@ -111,7 +111,7 @@ export default function SupportPage() {
             className="faq-row"
             style={{ borderBottom: i < FAQS.length - 1 ? '1px solid var(--rule-soft)' : 'none' }}
           >
-            <div className="font-mono font-bold text-amber" style={{ fontSize: 13 }}>
+            <div className="font-mono font-bold text-ink-3" style={{ fontSize: 13 }}>
               q.{String(i + 1).padStart(2, '0')}
             </div>
             <div className="font-sans font-bold text-ink" style={{ fontSize: 22, letterSpacing: '-0.015em' }}>{f.q}</div>
@@ -125,7 +125,7 @@ export default function SupportPage() {
         <span>© 2026 xaymaca</span>
         <Link href="/" className="hover:text-ink transition-colors">./home</Link>
         <Link href="/privacy" className="hover:text-ink transition-colors">./privacy-policy</Link>
-        <span className="text-right">v1.0.0</span>
+        <span className="text-right">v1.7.0</span>
       </footer>
     </div>
   )
