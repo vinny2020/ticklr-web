@@ -41,14 +41,14 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Ticklr — Your People Matter',
     description: 'Private contact reminders for the relationships that matter most.',
-    images: ['/assets/app-preview.jpg'],
+    images: ['/assets/ticklr-og-hero-q85.jpg'],
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Ticklr — Your People Matter',
     description: 'Private contact reminders. On your device. Nowhere else.',
-    images: ['/assets/app-preview.jpg'],
+    images: ['/assets/ticklr-og-hero-q85.jpg'],
   },
   icons: {
     icon: '/assets/app-icon.png',
